@@ -1,0 +1,68 @@
+# ============================================================================
+# Requirements — cedalion fNIRS/DOT pipeline (+ NIRS-BIDS import, Brodmann
+# atlas, quality metrics, FPA ROI analysis)
+# ============================================================================
+# The results were produced with Python 3.13 and cedalion 26.5.2.dev3
+# (commit 923c4276565b8ffc38b4c355c1719b733cfa1b15, pinned below).
+#
+# The modules in processors_cedalion add NO new dependencies — every import
+# they use is already pulled in by cedalion. Installing cedalion is therefore
+# sufficient to run the whole project, including validation-cedalion.ipynb.
+#
+# ----------------------------------------------------------------------------
+# RECOMMENDED INSTALL (most robust — VTK/OpenCV/MCX binaries via conda):
+#
+#     git clone https://github.com/ibs-lab/cedalion.git
+#     cd cedalion
+#     git checkout 923c4276565b8ffc38b4c355c1719b733cfa1b15
+#     conda env create -n cedalion -f environment_dev.yml
+#     conda activate cedalion
+#     pip install -e .            # installs cedalion into the env
+#     # then, from your project folder:
+#     pip install -r requirements.txt   # (all already satisfied; documents direct deps)
+#
+# PIP-ONLY INSTALL (works, but vtk/opencv/pmcx wheels can be platform-finicky):
+#
+#     pip install -r requirements.txt
+# ============================================================================
+
+
+# --- Core framework ---------------------------------------------------------
+# Not on PyPI — install from source. This one line transitively pulls the
+# entire scientific stack below (numpy, pandas, xarray, matplotlib, h5py,
+# pint-xarray, pyvista/vtk, pmcx/MCX, snirf, ...).
+cedalion @ git+https://github.com/ibs-lab/cedalion.git@923c4276565b8ffc38b4c355c1719b733cfa1b15
+
+
+# ============================================================================
+# Direct dependencies of THIS project (already satisfied by cedalion above;
+# listed and version-matched so the pure-Python analysis layer can also be
+# installed into a pre-existing environment). Versions mirror cedalion's pins.
+# ============================================================================
+
+# --- numerics / data ---
+numpy==2.2.*
+pandas==2.3.*
+xarray==2025.6.*
+pint-xarray==0.4.*       # unit-aware DataArrays (.pint accessor)
+
+# --- I/O ---
+h5py==3.14.*             # SNIRF landmark injection (snirf_utils)
+
+# --- plotting / rendering ---
+matplotlib==3.10.*       # all 2D validation & ROI figures
+pyvista==0.45.*          # 3D effect maps and GIFs (visualization.py)
+vtk>9.3                  # pyvista backend
+
+# --- photon transport (forward model / fluence, method="mcx") ---
+pmcx>=0.3.3              # MCX Monte Carlo (GPU/CPU)
+pmcxcl>=0.3.1            # OpenCL fallback
+
+# ---------------------------------------------------------------------------
+# Notes
+# ---------------------------------------------------------------------------
+# * Jupyter / notebook / ipywidgets come with cedalion's env; add explicitly
+#   only for a pip-only setup that needs to run the .ipynb:
+#       # notebook  ipywidgets  ipympl
+# * If `pip install vtk`/`opencv-python`/`pmcx` fails on your platform, use the
+#   conda route above (that is why the maintainers recommend it).
