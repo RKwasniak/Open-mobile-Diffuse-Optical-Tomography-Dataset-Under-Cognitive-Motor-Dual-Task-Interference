@@ -182,5 +182,4 @@ characters.
 
 ## License
 
-No license file is included yet. Add a `LICENSE` before publishing if you intend
-others to reuse the code.
+BSD-3-Clause license
